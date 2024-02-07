@@ -6,16 +6,16 @@ const jsend = require("jsend");
 const indexRouter = require("./routes/index");
 const coursesRouter = require("./routes/courses.router");
 const authRouter = require("./routes/auth.router");
-
+const categoryRouter = require("./routes/category.router");
 const app = express();
-
 // Jsend Middelwares
 app.use(jsend.middleware);
 // Init routes
 app.use("/", indexRouter);
 app.use("/courses", coursesRouter);
 app.use("/auth", authRouter);
-
+app.use('/categories', categoryRouter);
+// App Body Parsing
 
 mongoose
   .connect(process.env.DATABASE_URL)
