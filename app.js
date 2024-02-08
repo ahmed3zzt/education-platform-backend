@@ -7,6 +7,7 @@ const indexRouter = require("./routes/index");
 const coursesRouter = require("./routes/courses.router");
 const authRouter = require("./routes/auth.router");
 const categoryRouter = require("./routes/category.router");
+const videoRouter = require("./routes/video.router");
 const app = express();
 // Jsend Middelwares
 app.use(jsend.middleware);
@@ -15,6 +16,7 @@ app.use("/", indexRouter);
 app.use("/courses", coursesRouter);
 app.use("/auth", authRouter);
 app.use('/categories', categoryRouter);
+app.use('/videos', videoRouter);
 // App Body Parsing
 
 mongoose
@@ -45,4 +47,6 @@ mongoose
         .jsend.error({ code: err.StatusCode || 500, message: err.message });
     }
   });
+
+
 module.exports = app;

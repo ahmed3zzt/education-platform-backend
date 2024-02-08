@@ -4,13 +4,8 @@ const User = require("../models/users.model");
 const Course = require("../models/course.model");
 const asyncWrapper = require("../Middlewares/async_wrapper");
 const AppError = require("../utils/app_error");
-
-// const createCategory = asyncWrapper(async (req, res, next) => {
-//   const category = await new Category(req.body);
-//   await category.save();
-//   res.status(201).jsend.success(category);
-// });
-
+const Video = require("../models/video.model");
+const slugify = require('slugify')
 const getAllCourses = asyncWrapper(async (req, res, next) => {
   const courses = await Course.find();
   const getCoursesWithAuthorAndCategoryName = async () => {
@@ -31,6 +26,7 @@ const getAllCourses = asyncWrapper(async (req, res, next) => {
           image: course.image,
           author: teacherName,
           category: categoryTitle,
+          slug: course.slug,
         });
       }
     }
@@ -51,6 +47,7 @@ const AddCourse = asyncWrapper(async (req, res, next) => {
     }
     const categoryId = await Category.find({ title: category });
     const author = reqUser.user_id;
+    const slug = slugify(title)
     const course = new Course({
       title,
       price,
@@ -106,9 +103,19 @@ const updateCourse = asyncWrapper(async (req, res, next) => {
   }
 });
 
+// get Course by Id and Get All Videos relation to This Course
+const getCourse = asyncWrapper(async (req, res, next) => {
+  const { courseId } = req.params;
+  const course = await Course.findById(courseId);
+  const videos = await Video.find({ course: courseId });
+  res.status(200).jsend.success({ course, videos });
+});
+
+
 module.exports = {
   AddCourse,
   getAllCourses,
   deleteCourse,
   updateCourse,
+  getCourse,
 };
