@@ -7,7 +7,11 @@ const AppError = require("../utils/app_error");
 const Video = require("../models/video.model");
 const slugify = require('slugify')
 const getAllCourses = asyncWrapper(async (req, res, next) => {
-  const courses = await Course.find();
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 2;
+  const skip = (page - 1) * limit;
+  const courses = await Course.find().limit(limit).skip(skip);
+  
   const getCoursesWithAuthorAndCategoryName = async () => {
     const coursesWithAuthorAndCategoryName = new Set();
     for (const course of courses) {
@@ -111,6 +115,18 @@ const getCourse = asyncWrapper(async (req, res, next) => {
   res.status(200).jsend.success({ course, videos });
 });
 
+const getAllCoursesByAuthorID = asyncWrapper(async (req,res,next)=>{
+  const courses = await Course.find({author: req.params.authorID});
+  const author = await User.find({_id: req.params.authorID},{"__v":false,"password":false,"email":false,"isActive":false})
+  res.jsend.success({courses,author})
+})
+
+
+const getAllCoursesByCategory = asyncWrapper(async (req,res,next)=>{
+  const courses = await Course.find({category: req.params.categoryId});
+  const category = await Category.find({_id:req.params.categoryId},{"__v":false})
+  res.jsend.success({courses,category});
+})
 
 module.exports = {
   AddCourse,
@@ -118,4 +134,6 @@ module.exports = {
   deleteCourse,
   updateCourse,
   getCourse,
+  getAllCoursesByAuthorID,
+  getAllCoursesByCategory
 };

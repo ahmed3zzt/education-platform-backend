@@ -86,5 +86,6 @@ router.post(
 
 
 router.post('/bannedAccount',authValidation,controller.bannedAccount);
-
+router.post('/activateUser/:id',authValidation,controller.activateUser)
+router.post('/reset-password/:token',jsonParser,controller.resetPassword)
 module.exports = router;

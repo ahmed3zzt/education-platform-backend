@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require('cors')
 const mongoose = require("mongoose");
 const jsend = require("jsend");
 const indexRouter = require("./routes/index");
@@ -9,6 +10,9 @@ const authRouter = require("./routes/auth.router");
 const categoryRouter = require("./routes/category.router");
 const videoRouter = require("./routes/video.router");
 const app = express();
+app.use(cors())
+
+
 // Jsend Middelwares
 app.use(jsend.middleware);
 // Init routes

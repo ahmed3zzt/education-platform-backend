@@ -13,5 +13,7 @@ router
   .delete(authValidation,controller.deleteCourse)
   .patch(jsonParser, authValidation ,controller.updateCourse);
 
+router.get('/author/:authorID',controller.getAllCoursesByAuthorID)
+router.get('/category/:categoryId',controller.getAllCoursesByCategory)
 router.get("/:courseId",controller.getCourse)
 module.exports = router;

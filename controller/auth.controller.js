@@ -124,9 +124,36 @@ const bannedAccount = asyncWraper(async (req, res, body) => {
   }
 });
 
+const activateUser = asyncWraper(async (req, res, next) => {
+  const reqUser = req.decoded;
+  if (reqUser.role === 'admin') {
+    const user = await User.findByIdAndUpdate(req.params.id, {
+      isActive: true
+    })
+    const newUser = await User.findOne({ _id: user._id }, { '__v': false, "password": false })
+    res.jsend.success(newUser)
+  }
+})
+
+const resetPassword = asyncWraper(async (req, res, next) => {
+  const token = req.params.token
+  const user = jwt.verify(token, process.env.SECRET_JWT_KEY, (err, decoded) => {
+    if (err) {
+      return err
+    }
+    return decoded
+  })
+  console.log(req.body)
+  const { password } = req.body
+  const hashedPass = bcrypt.hashSync(password, 10)
+  await User.findByIdAndUpdate(user.user_id, { password: hashedPass })
+  res.jsend.success("Done")
+})
 module.exports = {
   registerStudent,
   login,
   registerTeacher,
   bannedAccount,
+  activateUser,
+  resetPassword,
 };
